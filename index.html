@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Sabzi Hisab • Vegetable Market Calculator</title>
+
+  <!-- iPhone 15 Home Screen / Safari Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Sabzi Hisab" />
+  <meta name="theme-color" content="#065f46" />
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="" />
+
+  <style>
+    :root {
+      --bg-page: #f4f5f3;
+      --bg-card: #ffffff;
+      --bg-subtle: #f8faf8;
+      --bg-header: #065f46;
+      --bg-header-dark: #064e3b;
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --accent: #f59e0b;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --text-light: #6b7280;
+      --border: #d1d5db;
+      --border-soft: #e5e7eb;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.4;
+      overscroll-behavior-y: none;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    button, input {
+      font-family: inherit;
+      touch-action: manipulation;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    /* App Shell with iPhone 15 Safe Area Support */
+    .app-container {
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
+      padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Sticky Top Header clearing Dynamic Island */
+    .top-header {
+      background: linear-gradient(180deg, var(--bg-header) 0%, var(--bg-header-dark) 100%);
+      color: #ffffff;
+      padding-top: calc(max(14px, env(safe-area-inset-top, 14px)) + 6px);
+      padding-bottom: 14px;
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .brand-sub {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: #a7f3d0;
+      font-weight: 600;
+    }
+
+    /* Date Navigation Bar (44px+ touch targets) */
+    .date-bar {
+      background: rgba(0, 0, 0, 0.26);
+      border: 1px solid rgba(167, 243, 208, 0.25);
+      border-radius: var(--radius-md);
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .date-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .date-arrow-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .date-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .date-picker {
+      width: 100%;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 9px;
+      padding: 0 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color-scheme: dark;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .today-pill {
+      height: 44px;
+      padding: 0 12px;
+      border-radius: 9px;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .today-pill.hidden {
+      display: none;
+    }
+
+    /* Main Workspace */
+    .main-content {
+      padding: 14px 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Toast Banner */
+    .toast {
+      position: fixed;
+      top: calc(max(14px, env(safe-area-inset-top, 14px)) + 118px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111827;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: var(--shadow-md);
+      z-index: 60;
+      white-space: nowrap;
+      max-width: 92vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast.hidden {
+      display: none;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .cancel-edit-btn {
+      min-height: 36px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--danger);
+      background: var(--danger-light);
+      padding: 6px 12px;
+      border-radius: 9px;
+    }
+
+    .cancel-edit-btn.hidden {
+      display: none;
+    }
+
+    /* Vegetable Name Input & Chips */
+    .field-block {
+      margin-bottom: 14px;
+    }
+
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    .quick-list-top-btn {
+      min-height: 36px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    .name-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    /* All inputs >= 16px to prevent iOS Safari auto-zoom */
+    .text-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 46px 0 12px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: var(--bg-subtle);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+
+    .clear-input-btn {
+      position: absolute;
+      right: 4px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: transparent;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-input-btn::before {
+      content: "✕";
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-input-btn.hidden {
+      display: none;
+    }
+
+    .chips-scroller {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 10px 0 4px;
+      scrollbar-width: none;
+    }
+
+    .chips-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .veg-chip {
+      flex-shrink: 0;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      color: #1f2937;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .veg-chip:hover, .veg-chip.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--bg-header-dark);
+    }
+
+    .veg-chip.add-chip-btn {
+      background: var(--primary-light);
+      border: 1.5px dashed var(--primary);
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .veg-chip.manage-chip-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      padding: 0 12px;
+    }
+
+    .veg-chip.manage-chip-btn.active {
+      background: #fef2f2;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .chip-del-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--danger);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      margin-left: 2px;
+    }
+
+    /* Inline Quick-Add Chip Panel */
+    .custom-chip-drawer {
+      margin-top: 8px;
+      padding: 12px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .custom-chip-drawer.hidden {
+      display: none;
+    }
+
+    .custom-chip-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .custom-chip-input {
+      flex: 1;
+      height: 44px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--primary);
+      background: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      min-width: 0;
+    }
+
+    .custom-chip-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18);
+    }
+
+    .emoji-picker-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .emoji-picker-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .emoji-opt-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .emoji-opt-btn.selected {
+      border: 2px solid var(--primary-dark);
+      background: #d1fae5;
+    }
+
+    .sm-btn {
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sm-btn.primary {
+      background: var(--primary-dark);
+      color: #ffffff;
+    }
+
+    /* Perfectly Aligned Rate & Quantity Grid */
+    .rate-qty-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .rq-col {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .rq-header {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .rq-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Segmented Unit Toggle (kg / g) */
+    .unit-toggle {
+      display: inline-flex;
+      background: #e5e7eb;
+      padding: 2px;
+      border-radius: 9px;
+      height: 36px;
+      align-items: center;
+    }
+
+    .unit-btn {
+      padding: 0 11px;
+      height: 32px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .unit-btn.active {
+      background: var(--primary-dark);
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    .num-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .num-prefix {
+      position: absolute;
+      left: 11px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .num-suffix {
+      position: absolute;
+      right: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      pointer-events: none;
+    }
+
+    .num-input {
+      width: 100%;
+      height: 52px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      background: var(--bg-subtle);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .num-input.has-prefix {
+      padding: 0 36px 0 26px;
+    }
+
+    .num-input.no-prefix {
+      padding: 0 36px 0 12px;
+    }
+
+    .num-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+
+    /* Quick Weight Presets (44px+ touch targets) */
+    .preset-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .preset-btn {
+      height: 44px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+      font-weight: 800;
+      color: #1f2937;
+    }
+
+    .preset-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    /* Live Calculation Preview & Submit Row */
+    .action-row {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .live-preview-box {
+      flex: 1;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .live-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--bg-header);
+    }
+
+    .live-amount {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--bg-header-dark);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+    }
+
+    .live-formula {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .add-btn {
+      min-width: 136px;
+      min-height: 56px;
+      padding: 0 16px;
+      border-radius: var(--radius-md);
+      background: var(--primary-dark);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 3px 8px rgba(4, 120, 87, 0.25);
+    }
+
+    /* Vendor Quote Check Card */
+    .vendor-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .vendor-info h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .vendor-info p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .vendor-input-wrap {
+      position: relative;
+      width: 126px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .vendor-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 10px 0 24px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-subtle);
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .vendor-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .vendor-result {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .vendor-result.hidden {
+      display: none;
+    }
+
+    .diff-badge {
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    .diff-match {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .diff-higher {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .diff-lower {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    /* Basket Section */
+    .basket-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+
+    .basket-title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .clear-all-btn {
+      min-height: 36px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--danger);
+      background: var(--danger-light);
+      border: 1px solid #fecaca;
+      padding: 6px 12px;
+      border-radius: 9px;
+    }
+
+    .clear-all-btn.hidden {
+      display: none;
+    }
+
+    .empty-state {
+      background: #ffffff;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 16px;
+      text-align: center;
+    }
+
+    .empty-state.hidden {
+      display: none;
+    }
+
+    .empty-icon {
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+
+    .empty-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .empty-sub {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .item-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item-card {
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .item-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .item-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-meta {
+      margin: 3px 0 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .item-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .item-price {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--bg-header-dark);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .item-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-action-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .del-btn {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    /* Sticky Bottom Grand Total Bar clearing iPhone 15 Home Indicator */
+    .sticky-total-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-header-dark);
+      color: #ffffff;
+      padding-top: 12px;
+      padding-bottom: calc(max(12px, env(safe-area-inset-bottom, 12px)) + 4px);
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.18);
+      z-index: 30;
+    }
+
+    .sticky-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .total-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6ee7b7;
+    }
+
+    .total-value {
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .total-stats {
+      text-align: right;
+    }
+
+    .count-pill {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .weight-sub {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #a7f3d0;
+      font-weight: 600;
+    }
+
+    /* Confirmation Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.65);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.hidden {
+      display: none;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .full-btn {
+      width: 100%;
+      height: 46px;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-top: 12px;
+    }
+
+    .full-btn.danger {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    .full-btn.secondary {
+      background: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .confirm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Clean Top Header + Date Navigation -->
+    <header class="top-header">
+      <div class="header-top-row">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">🥬</div>
+          <div>
+            <h1 class="brand-title">Sabzi Hisab</h1>
+            <p class="brand-sub" id="header-date-subtitle">Local Market Calculator</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="date-bar">
+        <div class="date-nav-group">
+          <button type="button" class="date-arrow-btn" id="btn-prev-day" aria-label="Previous day">‹</button>
+          <div class="date-input-wrap">
+            <input type="date" id="input-session-date" class="date-picker" aria-label="Select shopping date" />
+          </div>
+          <button type="button" class="date-arrow-btn" id="btn-next-day" aria-label="Next day">›</button>
+        </div>
+        <button type="button" class="today-pill hidden" id="btn-today-shortcut">Today</button>
+      </div>
+    </header>
+
+    <!-- Non-blocking Toast Message -->
+    <div id="toast-banner" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Entry Card -->
+      <section class="card" aria-label="Add Vegetable">
+        <div class="card-header">
+          <h2 class="card-title" id="form-heading">Add Vegetable</h2>
+          <button type="button" class="cancel-edit-btn hidden" id="btn-cancel-edit">Cancel Edit</button>
+        </div>
+
+        <!-- 1. Vegetable Name -->
+        <div class="field-block">
+          <div class="field-label-row">
+            <label for="input-veg-name" class="field-label">1. Vegetable Name</label>
+            <button type="button" id="btn-toggle-add-chip" class="quick-list-top-btn">+ Add to Quick List</button>
+          </div>
+          <div class="name-input-wrap">
+            <input
+              type="text"
+              id="input-veg-name"
+              class="text-input"
+              placeholder="Enter vegetable name or tap below..."
+              autocomplete="off"
+            />
+            <button type="button" class="clear-input-btn hidden" id="btn-clear-name" aria-label="Clear vegetable name"></button>
+          </div>
+          <div class="chips-scroller" id="veg-chips-container"></div>
+
+          <!-- Inline Custom Chip Creator -->
+          <div class="custom-chip-drawer hidden" id="custom-chip-drawer">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;font-weight:800;color:var(--bg-header-dark);text-transform:uppercase;letter-spacing:0.03em;">Add New Quick-Select Vegetable</span>
+              <button type="button" id="btn-close-chip-drawer" style="min-width:36px;min-height:36px;font-size:14px;font-weight:800;color:var(--text-muted);" aria-label="Close custom vegetable drawer">✕</button>
+            </div>
+            <div class="emoji-picker-row" id="emoji-picker-row" aria-label="Choose vegetable icon"></div>
+            <div class="custom-chip-row">
+              <input
+                type="text"
+                id="input-new-chip-name"
+                class="custom-chip-input"
+                placeholder="e.g. Radish, Ridge Gourd..."
+                autocomplete="off"
+              />
+              <button type="button" id="btn-save-custom-chip" class="sm-btn primary">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Aligned Rate & Quantity Grid -->
+        <div class="rate-qty-grid">
+          <!-- Left Column: Rate -->
+          <div class="rq-col">
+            <div class="rq-header">
+              <label for="input-rate" class="rq-label">2. Rate (₹ / kg)</label>
+            </div>
+            <div class="num-input-box">
+              <span class="num-prefix">₹</span>
+              <input
+                type="number"
+                id="input-rate"
+                class="num-input has-prefix"
+                inputmode="decimal"
+                step="any"
+                min="0"
+                placeholder="0"
+              />
+              <span class="num-suffix">/kg</span>
+            </div>
+          </div>
+
+          <!-- Right Column: Quantity + kg/g Toggle -->
+          <div class="rq-col">
+            <div class="rq-header">
+              <label for="input-qty" class="rq-label">3. Quantity</label>
+              <div class="unit-toggle" role="group" aria-label="Quantity unit">
+                <button type="button" class="unit-btn active" id="btn-unit-kg">kg</button>
+                <button type="button" class="unit-btn" id="btn-unit-g">g</button>
+              </div>
+            </div>
+            <div class="num-input-box">
+              <input
+                type="number"
+                id="input-qty"
+                class="num-input no-prefix"
+                inputmode="decimal"
+                step="any"
+                min="0"
+                placeholder="0"
+              />
+              <span class="num-suffix" id="qty-unit-label">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Quantity Pills -->
+        <div class="preset-row">
+          <button type="button" class="preset-btn" data-val="100" data-unit="g">100g</button>
+          <button type="button" class="preset-btn" data-val="250" data-unit="g">250g</button>
+          <button type="button" class="preset-btn" data-val="500" data-unit="g">500g</button>
+          <button type="button" class="preset-btn" data-val="750" data-unit="g">750g</button>
+          <button type="button" class="preset-btn" data-val="1" data-unit="kg">1kg</button>
+          <button type="button" class="preset-btn" data-val="1.5" data-unit="kg">1.5kg</button>
+          <button type="button" class="preset-btn" data-val="2" data-unit="kg">2kg</button>
+        </div>
+
+        <!-- Live Item Subtotal + Add Button -->
+        <div class="action-row">
+          <div class="live-preview-box">
+            <span class="live-label">Item Price</span>
+            <span class="live-amount" id="live-item-price">₹0.00</span>
+            <span class="live-formula" id="live-item-formula">Enter rate &amp; quantity</span>
+          </div>
+          <button type="button" class="add-btn" id="btn-save-item">
+            <span id="btn-save-icon">+</span>
+            <span id="btn-save-text">Add to List</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Vendor Quote Check Card -->
+      <section class="card" aria-label="Vendor Total Check">
+        <div class="vendor-row">
+          <div class="vendor-info">
+            <h3>Vendor Quote Check</h3>
+            <p>Enter vendor's final total to compare</p>
+          </div>
+          <div class="vendor-input-wrap">
+            <span class="num-prefix">₹</span>
+            <input
+              type="number"
+              id="input-vendor-quote"
+              class="vendor-input"
+              inputmode="decimal"
+              step="any"
+              min="0"
+              placeholder="0"
+            />
+          </div>
+        </div>
+        <div class="vendor-result hidden" id="vendor-diff-row">
+          <span>Comparison:</span>
+          <span class="diff-badge" id="vendor-diff-badge"></span>
+        </div>
+      </section>
+
+      <!-- Purchased Items Basket -->
+      <div class="basket-header">
+        <h2 class="basket-title" id="basket-title">Basket • Today</h2>
+        <button type="button" class="clear-all-btn hidden" id="btn-open-clear">Clear Date</button>
+      </div>
+
+      <div class="empty-state" id="empty-basket">
+        <div class="empty-icon">🧺</div>
+        <p class="empty-title">No vegetables added for this date</p>
+        <p class="empty-sub">Pick a vegetable, enter the rate per kg and quantity above.</p>
+      </div>
+
+      <ul class="item-list" id="basket-list"></ul>
+    </main>
+
+    <!-- Sticky Bottom Grand Total Bar -->
+    <footer class="sticky-total-bar">
+      <div class="sticky-inner">
+        <div>
+          <span class="total-label">Grand Total</span>
+          <div class="total-value" id="grand-total-value">₹0.00</div>
+        </div>
+        <div class="total-stats">
+          <span class="count-pill" id="grand-item-count">0 items</span>
+          <span class="weight-sub" id="grand-weight-total">0 kg total</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Clear Date Confirmation Modal -->
+  <div class="modal-backdrop hidden" id="modal-clear-confirm">
+    <div class="modal-card">
+      <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 800;">Clear items for this date?</h3>
+      <p style="margin: 0; font-size: 13px; color: var(--text-muted);">
+        This will delete all vegetables saved under <strong id="clear-date-label">this date</strong>. Other dates will remain safe.
+      </p>
+      <div class="confirm-grid">
+        <button type="button" class="full-btn secondary" style="margin-top: 0;" id="btn-cancel-clear">Keep Items</button>
+        <button type="button" class="full-btn danger" style="margin-top: 0;" id="btn-confirm-clear">Yes, Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      'use strict';
+
+      var STORAGE_KEY = 'sabzi_hisab_dates_v1';
+      var CUSTOM_CHIPS_KEY = 'sabzi_custom_chips_v1';
+
+      var QUICK_EMOJIS = ['🥬', '🥒', '🥕', '🍆', '🌽', '🥦', '🫑', '🍄', '🫛', '🌿', '🍠', '🎃'];
+
+      var COMMON_VEGGIES = [
+        { emoji: '🥔', name: 'Potato' },
+        { emoji: '🧅', name: 'Onion' },
+        { emoji: '🍅', name: 'Tomato' },
+        { emoji: '🌿', name: 'Ginger' },
+        { emoji: '🧄', name: 'Garlic' },
+        { emoji: '🌶️', name: 'Green Chilli' },
+        { emoji: '🌿', name: 'Coriander' },
+        { emoji: '🍋', name: 'Lemon' },
+        { emoji: '🫛', name: 'Ladyfinger' },
+        { emoji: '🍆', name: 'Brinjal' },
+        { emoji: '🥦', name: 'Cauliflower' },
+        { emoji: '🥬', name: 'Cabbage' },
+        { emoji: '🫑', name: 'Capsicum' },
+        { emoji: '🥬', name: 'Spinach' },
+        { emoji: '🥕', name: 'Carrot' },
+        { emoji: '🫛', name: 'Peas' },
+        { emoji: '🥒', name: 'Cucumber' },
+        { emoji: '🥒', name: 'Bottle Gourd' },
+        { emoji: '🥒', name: 'Bitter Gourd' },
+        { emoji: '🎃', name: 'Pumpkin' }
+      ];
+
+      // Safe Storage Wrapper (handles Safari Private Browsing gracefully & migrates legacy key if present)
+      var memoryFallback = {};
+      var customChipsFallback = [];
+      var StorageAdapter = {
+        readAll: function () {
+          try {
+            var raw = window.localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+              var legacy = window.localStorage.getItem('sabzi_hisab_v2_data');
+              if (legacy) {
+                window.localStorage.setItem(STORAGE_KEY, legacy);
+                raw = legacy;
+              }
+            }
+            if (!raw) return {};
+            var parsed = JSON.parse(raw);
+            return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+          } catch (e) {
+            return JSON.parse(JSON.stringify(memoryFallback));
+          }
+        },
+        writeAll: function (dataObj) {
+          memoryFallback = JSON.parse(JSON.stringify(dataObj));
+          try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj));
+          } catch (e) {
+            // Fallback already updated in memory
+          }
+        },
+        readCustomChips: function () {
+          try {
+            var raw = window.localStorage.getItem(CUSTOM_CHIPS_KEY);
+            if (!raw) return [];
+            var parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            return JSON.parse(JSON.stringify(customChipsFallback));
+          }
+        },
+        writeCustomChips: function (chipsArr) {
+          customChipsFallback = JSON.parse(JSON.stringify(chipsArr));
+          try {
+            window.localStorage.setItem(CUSTOM_CHIPS_KEY, JSON.stringify(chipsArr));
+          } catch (e) {
+            // Fallback already updated in memory
+          }
+        }
+      };
+
+      // Local Date Helpers
+      function getLocalTodayKey() {
+        var now = new Date();
+        var y = now.getFullYear();
+        var m = String(now.getMonth() + 1).padStart(2, '0');
+        var d = String(now.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + d;
+      }
+
+      function shiftDateKey(dateKey, deltaDays) {
+        var parts = dateKey.split('-').map(Number);
+        var dt = new Date(parts[0], (parts[1] || 1) - 1, (parts[2] || 1) + deltaDays);
+        var y = dt.getFullYear();
+        var m = String(dt.getMonth() + 1).padStart(2, '0');
+        var d = String(dt.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + d;
+      }
+
+      function formatFriendlyDate(dateKey) {
+        var today = getLocalTodayKey();
+        var yesterday = shiftDateKey(today, -1);
+        var parts = dateKey.split('-').map(Number);
+        var dt = new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+        var label = dt.toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+        if (dateKey === today) return 'Today • ' + label;
+        if (dateKey === yesterday) return 'Yesterday • ' + label;
+        return label;
+      }
+
+      // Pure Calculation Engine
+      var Engine = {
+        toKg: function (qty, unit) {
+          var n = parseFloat(qty);
+          if (!Number.isFinite(n) || n <= 0) return 0;
+          return unit === 'g' ? n / 1000 : n;
+        },
+        calcItem: function (rateVal, qtyVal, unit) {
+          var rate = parseFloat(rateVal);
+          var qty = parseFloat(qtyVal);
+          if (!Number.isFinite(rate) || rate <= 0) {
+            return { valid: false, weightKg: 0, subtotal: 0, error: 'Enter rate per kg (> ₹0)' };
+          }
+          if (!Number.isFinite(qty) || qty <= 0) {
+            return { valid: false, weightKg: 0, subtotal: 0, error: 'Enter quantity (> 0)' };
+          }
+          var weightKg = this.toKg(qty, unit);
+          var subtotal = Math.round((rate * weightKg + Number.EPSILON) * 100) / 100;
+          return { valid: true, weightKg: weightKg, subtotal: subtotal };
+        },
+        calcTotals: function (items) {
+          var total = 0;
+          var weight = 0;
+          for (var i = 0; i < items.length; i++) {
+            total += Number(items[i].subtotal) || 0;
+            weight += Number(items[i].weightKg) || 0;
+          }
+          return {
+            grandTotal: Math.round((total + Number.EPSILON) * 100) / 100,
+            totalWeightKg: Math.round((weight + Number.EPSILON) * 1000) / 1000,
+            count: items.length
+          };
+        },
+        formatWeight: function (qty, unit, weightKg) {
+          if (unit === 'g') {
+            return qty + ' g (' + weightKg + ' kg)';
+          }
+          return weightKg < 1 ? weightKg + ' kg (' + Math.round(weightKg * 1000) + ' g)' : weightKg + ' kg';
+        }
+      };
+
+      // App State
+      var state = {
+        selectedDate: getLocalTodayKey(),
+        dataByDate: StorageAdapter.readAll(),
+        customChips: StorageAdapter.readCustomChips(),
+        selectedChipEmoji: '🥬',
+        managingChips: false,
+        unit: 'kg',
+        editingId: null
+      };
+
+      // DOM Cache
+      var dom = {
+        headerDateSub: document.getElementById('header-date-subtitle'),
+        inputDate: document.getElementById('input-session-date'),
+        btnPrevDay: document.getElementById('btn-prev-day'),
+        btnNextDay: document.getElementById('btn-next-day'),
+        btnToday: document.getElementById('btn-today-shortcut'),
+        toast: document.getElementById('toast-banner'),
+        formHeading: document.getElementById('form-heading'),
+        btnCancelEdit: document.getElementById('btn-cancel-edit'),
+        inputName: document.getElementById('input-veg-name'),
+        btnClearName: document.getElementById('btn-clear-name'),
+        chipsContainer: document.getElementById('veg-chips-container'),
+        btnToggleAddChip: document.getElementById('btn-toggle-add-chip'),
+        customChipDrawer: document.getElementById('custom-chip-drawer'),
+        btnCloseChipDrawer: document.getElementById('btn-close-chip-drawer'),
+        emojiPickerRow: document.getElementById('emoji-picker-row'),
+        inputNewChipName: document.getElementById('input-new-chip-name'),
+        btnSaveCustomChip: document.getElementById('btn-save-custom-chip'),
+        inputRate: document.getElementById('input-rate'),
+        inputQty: document.getElementById('input-qty'),
+        btnUnitKg: document.getElementById('btn-unit-kg'),
+        btnUnitG: document.getElementById('btn-unit-g'),
+        qtyUnitLabel: document.getElementById('qty-unit-label'),
+        livePrice: document.getElementById('live-item-price'),
+        liveFormula: document.getElementById('live-item-formula'),
+        btnSaveItem: document.getElementById('btn-save-item'),
+        btnSaveIcon: document.getElementById('btn-save-icon'),
+        btnSaveText: document.getElementById('btn-save-text'),
+        inputVendorQuote: document.getElementById('input-vendor-quote'),
+        vendorDiffRow: document.getElementById('vendor-diff-row'),
+        vendorDiffBadge: document.getElementById('vendor-diff-badge'),
+        basketTitle: document.getElementById('basket-title'),
+        btnOpenClear: document.getElementById('btn-open-clear'),
+        emptyBasket: document.getElementById('empty-basket'),
+        basketList: document.getElementById('basket-list'),
+        grandTotalValue: document.getElementById('grand-total-value'),
+        grandItemCount: document.getElementById('grand-item-count'),
+        grandWeightTotal: document.getElementById('grand-weight-total'),
+        // Clear Confirm Modal
+        modalClearConfirm: document.getElementById('modal-clear-confirm'),
+        clearDateLabel: document.getElementById('clear-date-label'),
+        btnCancelClear: document.getElementById('btn-cancel-clear'),
+        btnConfirmClear: document.getElementById('btn-confirm-clear')
+      };
+
+      var toastTimer = null;
+      function showToast(msg) {
+        dom.toast.textContent = msg;
+        dom.toast.classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          dom.toast.classList.add('hidden');
+        }, 2200);
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function getActiveItems() {
+        return state.dataByDate[state.selectedDate] || [];
+      }
+
+      function setActiveItems(items) {
+        if (!items || items.length === 0) {
+          delete state.dataByDate[state.selectedDate];
+        } else {
+          state.dataByDate[state.selectedDate] = items;
+        }
+        StorageAdapter.writeAll(state.dataByDate);
+      }
+
+      function setUnit(unit) {
+        state.unit = unit === 'g' ? 'g' : 'kg';
+        dom.qtyUnitLabel.textContent = state.unit;
+        if (state.unit === 'kg') {
+          dom.btnUnitKg.classList.add('active');
+          dom.btnUnitG.classList.remove('active');
+        } else {
+          dom.btnUnitG.classList.add('active');
+          dom.btnUnitKg.classList.remove('active');
+        }
+        updateLivePreview();
+      }
+
+      function updateClearNameBtn() {
+        if (dom.inputName.value.trim().length > 0) {
+          dom.btnClearName.classList.remove('hidden');
+        } else {
+          dom.btnClearName.classList.add('hidden');
+        }
+      }
+
+      function updateLivePreview() {
+        var res = Engine.calcItem(dom.inputRate.value, dom.inputQty.value, state.unit);
+        if (res.valid) {
+          dom.livePrice.textContent = '₹' + res.subtotal.toFixed(2);
+          dom.liveFormula.textContent = '₹' + parseFloat(dom.inputRate.value) + '/kg × ' + res.weightKg + ' kg';
+        } else {
+          dom.livePrice.textContent = '₹0.00';
+          dom.liveFormula.textContent = 'Enter rate & quantity';
+        }
+      }
+
+      function resetEntryForm() {
+        state.editingId = null;
+        dom.inputName.value = '';
+        updateClearNameBtn();
+        dom.inputRate.value = '';
+        dom.inputQty.value = '';
+        setUnit('kg');
+        dom.formHeading.textContent = 'Add Vegetable';
+        dom.btnSaveIcon.textContent = '+';
+        dom.btnSaveText.textContent = 'Add to List';
+        dom.btnCancelEdit.classList.add('hidden');
+        updateLivePreview();
+      }
+
+      function setSessionDate(dateKey) {
+        if (!dateKey) return;
+        state.selectedDate = dateKey;
+        dom.inputDate.value = dateKey;
+        var friendly = formatFriendlyDate(dateKey);
+        dom.headerDateSub.textContent = 'Local Market Calculator • ' + friendly;
+        dom.basketTitle.textContent = 'Basket • ' + friendly;
+
+        if (dateKey === getLocalTodayKey()) {
+          dom.btnToday.classList.add('hidden');
+        } else {
+          dom.btnToday.classList.remove('hidden');
+        }
+
+        resetEntryForm();
+        renderBasket();
+      }
+
+      function renderChips() {
+        var allChips = COMMON_VEGGIES.map(function (v) {
+          return { emoji: v.emoji, name: v.name, custom: false };
+        }).concat(state.customChips.map(function (c) {
+          return { emoji: c.emoji || '🥬', name: c.name, custom: true };
+        }));
+
+        var chipsHtml = allChips.map(function (v) {
+          var delMark = (v.custom && state.managingChips)
+            ? '<span class="chip-del-badge" aria-hidden="true">×</span>'
+            : '';
+          return '<button type="button" class="veg-chip" data-name="' + escapeHtml(v.name) + '" data-custom="' + (v.custom ? '1' : '0') + '">' +
+            '<span>' + v.emoji + '</span><span>' + escapeHtml(v.name) + '</span>' + delMark + '</button>';
+        }).join('');
+
+        var addBtnHtml = '<button type="button" class="veg-chip add-chip-btn" data-chip-action="open-add">+ Add Item</button>';
+        var manageBtnHtml = state.customChips.length > 0
+          ? '<button type="button" class="veg-chip manage-chip-btn' + (state.managingChips ? ' active' : '') + '" data-chip-action="toggle-manage">' +
+              (state.managingChips ? 'Done' : '✎ Edit List') +
+            '</button>'
+          : '';
+
+        dom.chipsContainer.innerHTML = chipsHtml + addBtnHtml + manageBtnHtml;
+      }
+
+      function renderEmojiPicker() {
+        dom.emojiPickerRow.innerHTML = QUICK_EMOJIS.map(function (em) {
+          var sel = em === state.selectedChipEmoji ? ' selected' : '';
+          return '<button type="button" class="emoji-opt-btn' + sel + '" data-emoji="' + em + '">' + em + '</button>';
+        }).join('');
+      }
+
+      function openCustomChipDrawer(prefillName) {
+        renderEmojiPicker();
+        dom.customChipDrawer.classList.remove('hidden');
+        if (typeof prefillName === 'string' && prefillName.trim()) {
+          dom.inputNewChipName.value = prefillName.trim();
+        } else if (dom.inputName.value.trim()) {
+          dom.inputNewChipName.value = dom.inputName.value.trim();
+        } else {
+          dom.inputNewChipName.value = '';
+        }
+        dom.inputNewChipName.focus();
+      }
+
+      function closeCustomChipDrawer() {
+        dom.customChipDrawer.classList.add('hidden');
+        dom.inputNewChipName.value = '';
+      }
+
+      function saveCustomChip() {
+        var raw = dom.inputNewChipName.value.trim();
+        if (!raw) {
+          showToast('Enter a vegetable name');
+          dom.inputNewChipName.focus();
+          return;
+        }
+        var lower = raw.toLowerCase();
+        var existsInDefault = COMMON_VEGGIES.some(function (v) { return v.name.toLowerCase() === lower; });
+        var existsInCustom = state.customChips.some(function (c) { return c.name.toLowerCase() === lower; });
+        if (existsInDefault || existsInCustom) {
+          dom.inputName.value = raw;
+          updateClearNameBtn();
+          closeCustomChipDrawer();
+          showToast(raw + ' is already in the list');
+          return;
+        }
+
+        state.customChips.push({
+          emoji: state.selectedChipEmoji || '🥬',
+          name: raw
+        });
+        StorageAdapter.writeCustomChips(state.customChips);
+        dom.inputName.value = raw;
+        updateClearNameBtn();
+        closeCustomChipDrawer();
+        renderChips();
+        showToast('Added "' + raw + '" to quick list');
+        dom.inputRate.focus();
+      }
+
+      function removeCustomChipByName(name) {
+        var targetLower = String(name || '').toLowerCase();
+        state.customChips = state.customChips.filter(function (c) {
+          return c.name.toLowerCase() !== targetLower;
+        });
+        if (state.customChips.length === 0) {
+          state.managingChips = false;
+        }
+        StorageAdapter.writeCustomChips(state.customChips);
+        renderChips();
+        showToast('Removed "' + name + '" from quick list');
+      }
+
+      function updateVendorComparison(grandTotal) {
+        var quote = parseFloat(dom.inputVendorQuote.value);
+        if (!Number.isFinite(quote) || quote <= 0) {
+          dom.vendorDiffRow.classList.add('hidden');
+          return;
+        }
+        dom.vendorDiffRow.classList.remove('hidden');
+        var diff = Math.round((quote - grandTotal + Number.EPSILON) * 100) / 100;
+        if (Math.abs(diff) < 0.01) {
+          dom.vendorDiffBadge.textContent = 'Exact Match ✓';
+          dom.vendorDiffBadge.className = 'diff-badge diff-match';
+        } else if (diff > 0) {
+          dom.vendorDiffBadge.textContent = 'Vendor asking ₹' + diff.toFixed(2) + ' extra';
+          dom.vendorDiffBadge.className = 'diff-badge diff-higher';
+        } else {
+          dom.vendorDiffBadge.textContent = 'Vendor ₹' + Math.abs(diff).toFixed(2) + ' less';
+          dom.vendorDiffBadge.className = 'diff-badge diff-lower';
+        }
+      }
+
+      function renderBasket() {
+        var items = getActiveItems();
+        var totals = Engine.calcTotals(items);
+
+        dom.grandTotalValue.textContent = '₹' + totals.grandTotal.toFixed(2);
+        dom.grandItemCount.textContent = totals.count + (totals.count === 1 ? ' item' : ' items');
+        dom.grandWeightTotal.textContent = totals.totalWeightKg + ' kg total';
+
+        updateVendorComparison(totals.grandTotal);
+
+        if (items.length === 0) {
+          dom.emptyBasket.classList.remove('hidden');
+          dom.btnOpenClear.classList.add('hidden');
+          dom.basketList.innerHTML = '';
+          return;
+        }
+
+        dom.emptyBasket.classList.add('hidden');
+        dom.btnOpenClear.classList.remove('hidden');
+
+        dom.basketList.innerHTML = items.map(function (item) {
+          var weightText = Engine.formatWeight(item.qty, item.unit, item.weightKg);
+          return '<li class="item-card" data-id="' + escapeHtml(item.id) + '">' +
+            '<div class="item-main">' +
+              '<h3 class="item-name">' + escapeHtml(item.name) + '</h3>' +
+              '<p class="item-meta">₹' + item.rate + '/kg × ' + escapeHtml(weightText) + '</p>' +
+            '</div>' +
+            '<div class="item-right">' +
+              '<div class="item-price">₹' + item.subtotal.toFixed(2) + '</div>' +
+              '<div class="item-btns">' +
+                '<button type="button" class="icon-action-btn edit-btn" data-action="edit" data-id="' + escapeHtml(item.id) + '" aria-label="Edit item">✎</button>' +
+                '<button type="button" class="icon-action-btn del-btn" data-action="delete" data-id="' + escapeHtml(item.id) + '" aria-label="Delete item">✕</button>' +
+              '</div>' +
+            '</div>' +
+          '</li>';
+        }).join('');
+      }
+
+      function saveCurrentEntry() {
+        var calc = Engine.calcItem(dom.inputRate.value, dom.inputQty.value, state.unit);
+        if (!calc.valid) {
+          showToast(calc.error);
+          if (!parseFloat(dom.inputRate.value) || parseFloat(dom.inputRate.value) <= 0) {
+            dom.inputRate.focus();
+          } else {
+            dom.inputQty.focus();
+          }
+          return;
+        }
+
+        var items = getActiveItems().slice();
+        var rawName = dom.inputName.value.trim();
+        var finalName = rawName || ('Vegetable #' + (items.length + 1));
+        var rateNum = parseFloat(dom.inputRate.value);
+        var qtyNum = parseFloat(dom.inputQty.value);
+
+        if (state.editingId) {
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].id === state.editingId) {
+              items[i] = {
+                id: items[i].id,
+                name: finalName,
+                rate: rateNum,
+                qty: qtyNum,
+                unit: state.unit,
+                weightKg: calc.weightKg,
+                subtotal: calc.subtotal
+              };
+              break;
+            }
+          }
+          setActiveItems(items);
+          showToast('Updated ' + finalName + ' (₹' + calc.subtotal.toFixed(2) + ')');
+        } else {
+          var newItem = {
+            id: 'veg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            name: finalName,
+            rate: rateNum,
+            qty: qtyNum,
+            unit: state.unit,
+            weightKg: calc.weightKg,
+            subtotal: calc.subtotal
+          };
+          items.unshift(newItem);
+          setActiveItems(items);
+          showToast('Added ' + finalName + ' • ₹' + calc.subtotal.toFixed(2));
+        }
+
+        resetEntryForm();
+        renderBasket();
+      }
+
+      function beginEditItem(id) {
+        var items = getActiveItems();
+        var target = null;
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].id === id) {
+            target = items[i];
+            break;
+          }
+        }
+        if (!target) return;
+
+        state.editingId = target.id;
+        dom.inputName.value = target.name;
+        updateClearNameBtn();
+        dom.inputRate.value = target.rate;
+        dom.inputQty.value = target.qty;
+        setUnit(target.unit);
+        dom.formHeading.textContent = 'Editing Vegetable';
+        dom.btnSaveIcon.textContent = '✓';
+        dom.btnSaveText.textContent = 'Update';
+        dom.btnCancelEdit.classList.remove('hidden');
+        updateLivePreview();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function removeBasketItem(id) {
+        var items = getActiveItems();
+        var removedName = '';
+        var filtered = items.filter(function (it) {
+          if (it.id === id) {
+            removedName = it.name;
+            return false;
+          }
+          return true;
+        });
+        if (state.editingId === id) {
+          resetEntryForm();
+        }
+        setActiveItems(filtered);
+        renderBasket();
+        if (removedName) {
+          showToast('Removed ' + removedName);
+        }
+      }
+
+      // Generate Inline SVG Apple Touch Icon
+      function setupAppleIcon() {
+        try {
+          var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">' +
+            '<rect width="180" height="180" rx="40" fill="#065f46"/>' +
+            '<text x="90" y="114" font-size="88" text-anchor="middle">🥬</text></svg>';
+          var link = document.getElementById('apple-touch-icon');
+          if (link) {
+            link.setAttribute('href', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg));
+          }
+        } catch (e) {
+          // Ignore icon error
+        }
+      }
+
+      // Bind All Event Listeners
+      function bindEvents() {
+        // Date controls
+        dom.inputDate.addEventListener('change', function () {
+          if (dom.inputDate.value) setSessionDate(dom.inputDate.value);
+        });
+        dom.btnPrevDay.addEventListener('click', function () {
+          setSessionDate(shiftDateKey(state.selectedDate, -1));
+        });
+        dom.btnNextDay.addEventListener('click', function () {
+          setSessionDate(shiftDateKey(state.selectedDate, 1));
+        });
+        dom.btnToday.addEventListener('click', function () {
+          setSessionDate(getLocalTodayKey());
+        });
+
+        // Name & chips
+        dom.inputName.addEventListener('input', updateClearNameBtn);
+        dom.btnClearName.addEventListener('click', function () {
+          dom.inputName.value = '';
+          updateClearNameBtn();
+          dom.inputName.focus();
+        });
+        dom.chipsContainer.addEventListener('click', function (e) {
+          var chip = e.target.closest('.veg-chip');
+          if (!chip) return;
+          var action = chip.getAttribute('data-chip-action');
+          if (action === 'open-add') {
+            openCustomChipDrawer();
+            return;
+          }
+          if (action === 'toggle-manage') {
+            state.managingChips = !state.managingChips;
+            renderChips();
+            return;
+          }
+          var name = chip.getAttribute('data-name') || '';
+          var isCustom = chip.getAttribute('data-custom') === '1';
+          if (isCustom && state.managingChips) {
+            removeCustomChipByName(name);
+            return;
+          }
+          dom.inputName.value = name;
+          updateClearNameBtn();
+          dom.inputRate.focus();
+        });
+
+        dom.btnToggleAddChip.addEventListener('click', function () {
+          if (dom.customChipDrawer.classList.contains('hidden')) {
+            openCustomChipDrawer();
+          } else {
+            closeCustomChipDrawer();
+          }
+        });
+        dom.btnCloseChipDrawer.addEventListener('click', closeCustomChipDrawer);
+        dom.emojiPickerRow.addEventListener('click', function (e) {
+          var btn = e.target.closest('.emoji-opt-btn');
+          if (!btn) return;
+          state.selectedChipEmoji = btn.getAttribute('data-emoji') || '🥬';
+          renderEmojiPicker();
+        });
+        dom.btnSaveCustomChip.addEventListener('click', saveCustomChip);
+        dom.inputNewChipName.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            saveCustomChip();
+          }
+        });
+
+        // Unit toggle & inputs
+        dom.btnUnitKg.addEventListener('click', function () { setUnit('kg'); });
+        dom.btnUnitG.addEventListener('click', function () { setUnit('g'); });
+
+        dom.inputRate.addEventListener('input', updateLivePreview);
+        dom.inputRate.addEventListener('change', updateLivePreview);
+        dom.inputQty.addEventListener('input', updateLivePreview);
+        dom.inputQty.addEventListener('change', updateLivePreview);
+
+        // Quick weight preset pills
+        var presetBtns = document.querySelectorAll('.preset-btn');
+        for (var i = 0; i < presetBtns.length; i++) {
+          presetBtns[i].addEventListener('click', function () {
+            var val = this.getAttribute('data-val');
+            var unit = this.getAttribute('data-unit');
+            setUnit(unit);
+            dom.inputQty.value = val;
+            updateLivePreview();
+          });
+        }
+
+        // Save / Cancel Edit
+        dom.btnSaveItem.addEventListener('click', saveCurrentEntry);
+        dom.btnCancelEdit.addEventListener('click', resetEntryForm);
+
+        [dom.inputName, dom.inputRate, dom.inputQty].forEach(function (inp) {
+          inp.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              saveCurrentEntry();
+            }
+          });
+        });
+
+        // Basket Edit & Delete delegation
+        dom.basketList.addEventListener('click', function (e) {
+          var btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          var action = btn.getAttribute('data-action');
+          var id = btn.getAttribute('data-id');
+          if (action === 'edit') beginEditItem(id);
+          if (action === 'delete') removeBasketItem(id);
+        });
+
+        // Vendor quote check
+        dom.inputVendorQuote.addEventListener('input', function () {
+          var totals = Engine.calcTotals(getActiveItems());
+          updateVendorComparison(totals.grandTotal);
+        });
+
+        // Clear Date Modal
+        dom.btnOpenClear.addEventListener('click', function () {
+          dom.clearDateLabel.textContent = formatFriendlyDate(state.selectedDate);
+          dom.modalClearConfirm.classList.remove('hidden');
+        });
+        dom.btnCancelClear.addEventListener('click', function () {
+          dom.modalClearConfirm.classList.add('hidden');
+        });
+        dom.btnConfirmClear.addEventListener('click', function () {
+          setActiveItems([]);
+          dom.inputVendorQuote.value = '';
+          resetEntryForm();
+          renderBasket();
+          dom.modalClearConfirm.classList.add('hidden');
+          showToast('Cleared ' + formatFriendlyDate(state.selectedDate));
+        });
+      }
+
+      // Initialize App
+      setupAppleIcon();
+      renderChips();
+      bindEvents();
+      setSessionDate(getLocalTodayKey());
+    });
+  </script>
+</body>
+</html>
